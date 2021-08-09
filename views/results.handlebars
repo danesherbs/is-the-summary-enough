@@ -1,0 +1,7 @@
+<div class="space-y-4">
+  <p>Found {{this.count}} results for query</p>
+  {{this.query}}
+  {{#each this.results}}
+    <p class="underline">{{this.title}}</p>
+  {{/each}}
+</div>

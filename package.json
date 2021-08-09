@@ -1,0 +1,25 @@
+{
+  "name": "is-the-summary-enough",
+  "version": "1.0.0",
+  "description": "Is the summary of [some non-fiction book] enough to get most/all of the value?",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danesherbs/is-the-summary-enough.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danesherbs/is-the-summary-enough/issues"
+  },
+  "homepage": "https://github.com/danesherbs/is-the-summary-enough#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.3",
+    "sqlite3": "^5.0.2"
+  }
+}
