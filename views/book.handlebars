@@ -1,0 +1,32 @@
+<div class="space-y-8 p-2 pt-6">
+  <div>
+    <p class="text-xl font-medium">{{this.book.title}}</p>
+    <p class="text-base">by {{this.book.author}}</p>
+  </div>
+  <div class="space-y-2">
+    <p>Is the summary enough?</p>
+    <p class="p-2 bg-green-400 text-white w-24 font-medium rounded">Yes
+      {{this.book.votes_yes}}%</p>
+    <p class="p-2 bg-red-400 text-white w-96 font-medium rounded">No
+      {{this.book.votes_no}}%</p>
+  </div>
+  <div class="space-y-2">
+    <p>If you’ve read both the book and summary: was the summary enough to
+      understand the main idea(s)?</p>
+    <button
+      class="px-4 py-1 bg-gray-100 text-gray-500 font-medium rounded-lg cursor-pointer"
+    >Yes</button>
+    <button
+      class="px-4 py-1 bg-gray-100 text-gray-500 font-medium rounded-lg cursor-pointer"
+    >No</button>
+  </div>
+  {{! <div class="space-y-2">
+    <p>Did you decide to only read the summary based on this information?</p>
+    <button
+      class="px-4 py-1 bg-gray-100 text-gray-500 font-medium rounded-lg cursor-pointer"
+    >Yes</button>
+    <button
+      class="px-4 py-1 bg-gray-100 text-gray-500 font-medium rounded-lg cursor-pointer"
+    >No</button>
+  </div> }}
+</div>

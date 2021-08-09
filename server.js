@@ -9,30 +9,47 @@ app.engine("handlebars", exphbs());
 app.set("view engine", "handlebars");
 
 app.get("/", (req, res) => {
-  res.render("home");
-});
-
-app.get("/book", (req, res) => {
   const query = req.query.query || "";
-  const target = query.replace(/[^a-zA-Z0-9 -]/g, "");
+
+  if (query.length === 0) {
+    return res.render("home");
+  }
 
   // TODO: hit Google books API
 
-  const books = [
+  const reponse = [
     { id: 0, title: "Stubborn Attachments" },
     { id: 1, title: "The Art of Doing Science and Engineering" },
-    { id: 2, title: "Doing Good Better" },
+    { id: 2, title: "Never Split the Difference" },
   ];
 
-  const sql = `SELECT * FROM is_summary_enough WHERE book_id = ${bookId}`;
+  const results = reponse.map((book) => {
+    return { ...book, href: `book/${book.id}` };
+  });
+
+  res.render("results", {
+    query: query,
+    count: results.length,
+    results: results,
+  });
+});
+
+app.get("/book/:id", (req, res) => {
+  const sql = `SELECT * FROM is_summary_enough WHERE book_id = ${req.params.id}`;
 
   db.all(sql, [], (err, rows) => {
     if (err) {
       throw err;
     }
 
-    res.render("home", {
-      results: books,
+    if (rows.length !== 1) {
+      return res.send("Sorry there was an error retrieving the book id!");
+    }
+
+    const [book] = rows;
+
+    res.render("book", {
+      book: book,
     });
   });
 });
