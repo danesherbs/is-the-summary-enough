@@ -6,21 +6,21 @@
       href="https://unpkg.com/tailwindcss@2.0.2/dist/tailwind.min.css"
       rel="stylesheet"
     />
+    <script src="//unpkg.com/alpinejs"></script>
   </head>
   <body class="flex flex-col items-center justify-start text-gray-600">
     <div class="w-full max-w-lg min-h-screen space-y-4 px-4 sm:px-0 py-6">
       <div class="relative">
-        <form id="search" class="flex flex-row">
+        <form class="flex flex-row" action="/search" method="GET">
           <input
+            class="w-full p-3 mr-2 rounded-lg border-2 outline-none focus:border-blue-400"
             name="query"
-            placeholder="Search for a post"
-            class="w-full p-3 mr-2 rounded-lg border-2 focus:border-blue-400"
+            type="text"
+            placeholder="Search for a book"
           />
-          <input
-            type="submit"
-            value="Search"
+          <button
             class="px-4 bg-blue-400 text-white font-semibold rounded-lg cursor-pointer"
-          />
+          >Search</button>
         </form>
       </div>
       {{{body}}}
