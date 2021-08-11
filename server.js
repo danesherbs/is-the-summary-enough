@@ -26,7 +26,7 @@ app.get("/search", (req, res) => {
 
   const params = new URLSearchParams({
     "intitle:": query,
-    maxResults: 5,
+    maxResults: 30,
     key: apiKey,
   });
 
