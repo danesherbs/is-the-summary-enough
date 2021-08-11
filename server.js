@@ -35,7 +35,7 @@ app.get("/search", (req, res) => {
   axios
     .get(url.toString())
     .then((books) =>
-      books.data.items.map((book) => {
+      (books.data.items || []).map((book) => {
         return {
           id: book.id,
           title: book.volumeInfo.title,

@@ -5,10 +5,20 @@
   </div>
   <div class="space-y-2">
     <p>Is the summary enough to understand the main idea(s)?</p>
-    <p class="p-2 bg-green-400 text-white w-24 font-medium rounded">Yes
-      {{this.percentageYes}}%</p>
-    <p class="p-2 bg-red-400 text-white w-96 font-medium rounded">No
-      {{this.percentageNo}}%</p>
+    <p
+      class="p-2 bg-green-400 text-white w-24 font-medium rounded"
+      style="width: {{this.percentageYes}}%;"
+    >
+      Yes
+      {{this.percentageYes}}%
+    </p>
+    <p
+      class="p-2 bg-red-400 text-white w-96 font-medium rounded"
+      style="width: {{this.percentageNo}}%;"
+    >
+      No
+      {{this.percentageNo}}%
+    </p>
   </div>
   <div class="space-y-2" x-data="{ hasVoted: {{this.hasVoted}} }">
     <p>
