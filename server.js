@@ -2,6 +2,7 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const sqlite3 = require("sqlite3").verbose();
 const cookieParser = require("cookie-parser");
+const axios = require("axios");
 
 const app = express();
 const db = new sqlite3.Database("./database.db");
@@ -21,42 +22,54 @@ app.get("/search", (req, res) => {
     return res.render("home");
   }
 
-  // TODO: hit Google books API
-
-  const reponse = [
-    { id: 0, title: "Stubborn Attachments" },
-    { id: 1, title: "The Art of Doing Science and Engineering" },
-    { id: 2, title: "Never Split the Difference" },
-  ];
-
-  const results = reponse.map((book) => {
-    return { ...book, href: `book/${book.id}` };
+  const params = new URLSearchParams({
+    "intitle:": query,
+    maxResults: 5,
+    key: apiKey,
   });
 
-  res.render("search", {
-    query: query,
-    count: results.length,
-    results: results,
-  });
+  const url = new URL(
+    `https://www.googleapis.com/books/v1/volumes?q=${params.toString()}`
+  );
+
+  axios
+    .get(url.toString())
+    .then((books) =>
+      books.data.items.map((book) => {
+        return {
+          id: book.id,
+          title: book.volumeInfo.title,
+          author:
+            book.volumeInfo.authors.length > 0
+              ? book.volumeInfo.authors[0]
+              : "",
+          href: `book/${book.id}`,
+        };
+      })
+    )
+    .then((results) => {
+      res.render("search", {
+        query: query,
+        count: results.length,
+        results: results,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(500)
+        .send(
+          `There was an internal error when retrieving results for "${query}"`
+        );
+    });
 });
 
 app.get("/book/:id", (req, res) => {
   const bookId = req.params.id;
   const hasVoted = req.cookies ? req.cookies[bookId] !== undefined : false;
-  const sql = `SELECT * FROM books WHERE id = ${req.params.id}`;
+  const sql = `SELECT * FROM books WHERE id = "${req.params.id}"`;
 
-  db.all(sql, [], (err, rows) => {
-    if (err) {
-      throw err;
-    }
-
-    // TODO: create db entry if book doesn't exist
-
-    if (rows.length !== 1) {
-      return res.send("Sorry there was an error retrieving the book id!");
-    }
-
-    const [book] = rows;
+  const renderBook = (book) => {
     const totalVotes = book.votes_yes + book.votes_no;
     const percentageYes =
       totalVotes === 0
@@ -73,37 +86,84 @@ app.get("/book/:id", (req, res) => {
       percentageNo: percentageNo,
       hasVoted: hasVoted,
     });
+  };
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+
+    if (rows.length === 0) {
+      const url = new URL(
+        `https://www.googleapis.com/books/v1/volumes/${bookId}?key=${apiKey}`
+      );
+
+      axios.get(url.toString()).then((book) => {
+        const title = book.data.volumeInfo.title;
+        const author = book.data.volumeInfo.authors[0];
+        const votesYes = 1;
+        const votesNo = 1;
+
+        db.run(
+          `INSERT INTO books VALUES(
+              "${bookId}",
+              "${title}",
+              "${author}",
+              ${votesYes},
+              ${votesNo}
+          );`
+        );
+
+        renderBook({
+          id: bookId,
+          title: title,
+          author: author,
+          votes_yes: votesYes,
+          votes_no: votesNo,
+        });
+      });
+    } else if (rows.length === 1) {
+      renderBook(rows[0]);
+    } else {
+      console.log("Got multiple results back for book lookup by id:", rows);
+
+      return res
+        .status(500)
+        .send("Sorry there was an error retrieving the book id!");
+    }
   });
 });
 
 app.get("/vote/book/:id/yes", (req, res) => {
-  const bookId = parseInt(req.params.id);
+  const bookId = req.params.id;
 
-  if (bookId !== NaN) {
+  if (bookId) {
     const hasVoted = req.cookies ? req.cookies[bookId] !== undefined : false;
 
     if (!hasVoted) {
       res.cookie(req.params.id, 1, { httpOnly: true });
-      db.run(`UPDATE books SET votes_yes = votes_yes + 1 WHERE id = ${bookId}`);
+      db.run(
+        `UPDATE books SET votes_yes = votes_yes + 1 WHERE id = "${bookId}"`
+      );
     }
   }
 
-  res.send();
+  res.status(200).send();
 });
 
 app.get("/vote/book/:id/no", (req, res) => {
-  const bookId = parseInt(req.params.id);
+  const bookId = req.params.id;
 
-  if (bookId !== NaN) {
+  if (bookId) {
     const hasVoted = req.cookies ? req.cookies[bookId] !== undefined : false;
 
     if (!hasVoted) {
       res.cookie(req.params.id, 0);
-      db.run(`UPDATE books SET votes_no = votes_no + 1 WHERE id = ${bookId}`);
+      db.run(`UPDATE books SET votes_no = votes_no + 1 WHERE id = "${bookId}"`);
     }
   }
 
-  res.send();
+  res.status(200).send();
 });
 
 app.listen(process.env.PORT || 3000);

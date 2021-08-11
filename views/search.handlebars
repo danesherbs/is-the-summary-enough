@@ -1,13 +1,13 @@
 <div class="p-2 pt-6 space-y-4">
   <div>
-    <p>Found {{this.count}} results for "{{this.query}}"</p>
+    <p>Results for "{{this.query}}"</p>
   </div>
   {{#each this.results}}
     <div>
       <a
         href={{this.href}}
         class="underline cursor-pointer text-blue-500"
-      >{{this.title}}</a>
+      >{{this.title}} by {{this.author}}</a>
     </div>
   {{/each}}
 </div>
