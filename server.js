@@ -41,10 +41,11 @@ app.get("/search", (req, res) => {
         return {
           id: book.id,
           title: book.volumeInfo.title,
-          author:
-            book.volumeInfo.authors.length > 0
+          author: book.volumeInfo.authors
+            ? book.volumeInfo.authors.length > 0
               ? book.volumeInfo.authors[0]
-              : "",
+              : ""
+            : "Miscellaneous",
           pageCount: book.volumeInfo.pageCount,
           href: `book/${book.id}`,
         };
