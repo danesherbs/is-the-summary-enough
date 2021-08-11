@@ -99,7 +99,7 @@ app.get("/book/:id", (req, res) => {
       book: book,
       percentageYes: percentageYes,
       percentageNo: percentageNo,
-      totalVotes: totalVotes,
+      totalVotes: totalVotes - 2,
       hasVoted: hasVoted,
     });
   };
