@@ -15,6 +15,8 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
+const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+
 app.get("/search", (req, res) => {
   const query = req.query.query || "";
 
