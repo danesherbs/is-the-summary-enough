@@ -4,7 +4,7 @@
     <p class="text-base">by {{this.book.author}}</p>
   </div>
   <div class="space-y-2">
-    <p>Is the summary enough to understand the main idea(s)?</p>
+    <p>Should you just read the summary? ({{this.totalVotes}} votes)</p>
     <p
       class="p-2 bg-green-400 text-white w-24 font-medium rounded"
       style="width: {{this.percentageYes}}%;"
@@ -21,27 +21,24 @@
     </p>
   </div>
   <div class="space-y-2" x-data="{ hasVoted: {{this.hasVoted}} }">
-    <p>
-      If you’ve read both the book and summary: was the summary enough to
-      understand the main idea(s)?
-    </p>
+    <p>🙋‍♀️ Cast your vote</p>
 
-    <div x-show="hasVoted" x-cloak>
+    <div class="flex justify-center w-full" x-show="hasVoted" x-cloak>
       <div class="text-blue-500 font-semibold">Thanks for voting! 👍</div>
     </div>
 
-    <div x-show="!hasVoted" x-cloak>
+    <div class="space-y-2" x-show="!hasVoted" x-cloak>
       <button
-        class="px-4 py-1 bg-gray-100 font-medium rounded-lg cursor-pointer"
+        class="w-full px-4 py-1 bg-gray-100 font-medium rounded-lg cursor-pointer"
         onclick="fetch('/vote/book/{{this.book.id}}/yes')"
         @click="hasVoted = true"
-      >Yes
+      >I should have just read the summary
       </button>
       <button
-        class="px-4 py-1 bg-gray-100 font-medium rounded-lg cursor-pointer"
+        class="w-full px-4 py-1 bg-gray-100 font-medium rounded-lg cursor-pointer"
         onclick="fetch('/vote/book/{{this.book.id}}/no')"
         @click="hasVoted = true"
-      >No
+      >I'm happy I read the full book!
       </button>
     </div>
   </div>

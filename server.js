@@ -45,10 +45,12 @@ app.get("/search", (req, res) => {
             book.volumeInfo.authors.length > 0
               ? book.volumeInfo.authors[0]
               : "",
+          pageCount: book.volumeInfo.pageCount,
           href: `book/${book.id}`,
         };
       })
     )
+    .then((books) => books.filter((book) => book.pageCount >= 50))
     .then((results) => {
       res.render("search", {
         query: query,
@@ -86,6 +88,7 @@ app.get("/book/:id", (req, res) => {
       book: book,
       percentageYes: percentageYes,
       percentageNo: percentageNo,
+      totalVotes: totalVotes,
       hasVoted: hasVoted,
     });
   };
