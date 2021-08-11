@@ -51,6 +51,17 @@ app.get("/search", (req, res) => {
       })
     )
     .then((books) => books.filter((book) => book.pageCount >= 50))
+    .then((books) =>
+      books.reduce((acc, book) => {
+        const titles = acc.map((b) => b.title);
+
+        if (titles.includes(book.title)) {
+          return acc;
+        }
+
+        return [...acc, book];
+      }, [])
+    )
     .then((results) => {
       res.render("search", {
         query: query,
